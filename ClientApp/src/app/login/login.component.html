@@ -1,0 +1,57 @@
+<div>
+  <ul>
+      <li>
+        <img src="https://www.taxumo.com/wp-content/uploads/2018/02/logo_for_aqua_bg.png" style="width: 50% ; height:50%; padding-left: 20px; margin: 15px" />
+      </li>
+    </ul>
+  </div>
+  
+<div class='container-fluid'>
+  Enter E-mail Address: <br> 
+  <input type="text" id="email" name="email" placeholder="E-mail Address" 
+  (input)="saveEmail($event)"><br/>
+
+  Enter Tin: <br>
+  <input type="text" id="tin" name="tin" placeholder="TIN Number"
+  (input)="saveTIN($event)"><br/>
+
+  <a href="#" class="square_btn">
+  <i class="fa fa-chevron-right" (click)="verifyUser()"></i> Verify
+  </a><br />
+  
+  <input type="checkbox" />
+  <a href="#" data-toggle="modal" data-target="#termsModal">  Terms and Conditions </a>
+</div>
+  
+  
+<div class="modal fade" id="termsModal" tabindex="-1" role="dialog" aria-labelledby="termsModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Terms and Conditions</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          {{terms}}
+       </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+        
+    </div>
+  </div>
+</div>
+  
+  
+  
+  
+  
+  
+  
+  
+
