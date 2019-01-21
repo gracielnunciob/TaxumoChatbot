@@ -13,7 +13,7 @@ export class DetailsComponent implements OnInit {
   category: String;
   bName: String;
   notes: String;
-  picture: String;
+  imageSrc: string | ArrayBuffer = "";
 
   saveGross(e){
     this.grossAmount = e.target.value;
@@ -45,9 +45,15 @@ export class DetailsComponent implements OnInit {
     console.log("Notes: " + this.notes);
   }
 
-  savePicture(e){
-    this.picture = e.target.value;
-    console.log("Picture:" + this.picture);
+  readURL(event): void {
+    if (event.target.files && event.target.files[0]) {
+        const file = event.target.files[0];
+
+        const reader = new FileReader();
+        reader.onload = e => this.imageSrc = reader.result;
+
+        reader.readAsDataURL(file);
+    }
   }
 
   saveData(){
