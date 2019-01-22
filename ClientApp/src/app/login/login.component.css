@@ -71,4 +71,5 @@ input[type=text]:focus, textarea:focus {
   
 form{
   margin: 10px;
+  margin-top: 20px;
 }
