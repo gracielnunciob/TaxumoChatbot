@@ -16,15 +16,11 @@ export class LoginComponent implements OnInit {
 
   saveTIN(e) { 
     this.tinNo = e.target.value;
-    console.log("TIN number: " + this.tinNo)
+    console.log("TIN number: " + this.tinNo);
   }
 
   verifyUser(){
-      /* If(not tru)
-            Pop up based on emailAdd and tinNo
-        if (true)
-            redirect to the lagay stuff
-      */
+      Response.redirect("/helloworld/welcome");
   }
 
   ngOnInit() {
