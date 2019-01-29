@@ -2,21 +2,27 @@ using Microsoft.AspNetCore.Mvc;
 using System.Text.Encodings.Web;
 using System.Net.Http;
 using System.Net;
-using System.Web;
 using System.IO;
 using System.Text;
+
 
 
 namespace Router.Controllers{
     public class Routes : Controller
     {
-        private Request_Response.Controllers.TaxubotResponses taxubot;
-        
         // 
         // GET: /HelloWorld/
-        public IActionResult Index()
+        public string Index()
         {
-            return View();
+            
+            return "123";
+        }
+
+        [Route("confirm")]
+        [HttpPost]
+        public IActionResult SendConfirmation(){
+
+            return Ok("1234");
         }
 
         // 
@@ -34,6 +40,8 @@ namespace Router.Controllers{
         public void Log(){
             
         }
+
+          
         
     }
 
