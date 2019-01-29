@@ -1,92 +1,139 @@
-using Microsoft.AspNetCore.Mvc;
-using System.Text.Encodings.Web;
+using System;
+using System.Collections.Generic;
 using System.Net.Http;
-using System.Net;
-using System.IO;
-using System.Text;
+using TaxumoChatBot.Handlers;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Newtonsoft.Json.Linq;
 
-
-
-namespace Router.Controllers{
-
-    public class Routes : Controller
+namespace TaxumoChatBot.Controllers
+{
+    [Route("[controller]")]
+    public class WebhookController : Controller, IMessageSender
     {
-         private var _verifytoken = "taxumoizdabest";
-         private var _pageToken = "temp";
-         private var _appSecret = "temp1";        
-        public IActionResult Index()
-        {
-            return Ok("hi there");
+        private MessengerSettings Settings { get; set; }
+        private readonly ILogger<WebhookController> _logger;
+        private List<IMessengerHandler> _handlers;
+
+        public WebhookController(
+            IOptions<MessengerSettings> settings, 
+            ILogger<WebhookController> logger)
+        {            
+            Settings = settings.Value;
+            _logger = logger;
+            _handlers = new List<IMessengerHandler>();
+            _handlers.Add(new AuthenticationHandler<WebhookController>(_logger, this));
+            _handlers.Add(new MessageHandler<WebhookController>(_logger, this, Settings.ServerURL));
+            _handlers.Add(new DeliveryConfirmationHandler<WebhookController>(_logger));
+            _handlers.Add(new PostbackHandler<WebhookController>(_logger, this));
+            _handlers.Add(new MessageReadHandler<WebhookController>(_logger));
+            _handlers.Add(new AccountLinkedHandler<WebhookController>(_logger));            
         }
-        // HTTP Get endpoint to verify Webhook using the Verify Token
-        [Route("webhook")]
         [HttpGet]
-        public HttpResponseMessage Verify()
+        public string Get()
         {
-            var querystrings = Request.GetQueryNameValuePairs().ToDictionary(x => x.Key, x => x.Value);
-
-            Bot.Messenger.MessengerPlatform bot = Bot.Messenger.MessengerPlatform.CreateInstance(
-                    Bot.Messenger.MessengerPlatform.CreateCredentials(_appSecret, _pageToken, _verifytoken));
-
-            if (bot.Authenticator.VerifyToken(querystrings["hub.verify_token"]))
+            var req = Request;
+            var res = Response;
+            var result = string.Empty;
+            if (req.Query["hub.mode"] == "subscribe"
+                && req.Query["hub.verify_token"] == Settings.FBValidationToken) 
             {
-                return new HttpResponseMessage(HttpStatusCode.OK)
-                {
-                    Content = new StringContent(querystrings["hub.challenge"], Encoding.UTF8, "text/plain")
-                };
+                _logger.LogInformation("Validating webhook");
+                res.StatusCode = 200;
+                result = req.Query["hub.challenge"];
             }
-
-            return new HttpResponseMessage(HttpStatusCode.Unauthorized);
+            else 
+            {
+                _logger.LogError("Failed validation. Make sure the validation tokens match.");
+                res.StatusCode = 403;          
+            }
+            return result;  
         }
 
-        // HTTP Post endpoint to receive Webhook callbacks from Facebook Messenger
-        [Route("webhook")]
+        // POST /webhook
         [HttpPost]
-        public async Task<HttpResponseMessage> Post()
+        public void Post([FromBody]dynamic data)
         {
-            var body = await Request.Content.ReadAsStringAsync();
-
-            Bot.Messenger.MessengerPlatform bot = Bot.Messenger.MessengerPlatform.CreateInstance(
-                    Bot.Messenger.MessengerPlatform.CreateCredentials(_appSecret, _pageToken, _verifyToken));
-
-            if (!bot.Authenticator.VerifySignature(Request.Headers.GetValues("X-Hub-Signature").FirstOrDefault(), body))
-                return new HttpResponseMessage(HttpStatusCode.BadRequest);
-
-            Bot.Messenger.Models.WebhookModel webhookModel = bot.ProcessWebhookRequest(body);
-
-            foreach (var entry in webhookModel.Entries)
-            {
-                foreach (var evt in entry.Events)
-                {                
-                    if (evt.EventType == Bot.Messenger.Models.WebhookEventType.MessageReceivedCallback)
+            if (data["object"] == "page") {
+                var entries = data["entry"];
+                foreach (var pageEntry in entries)
+                {
+                    var pageID = pageEntry.id;
+                    var timeOfEvent = pageEntry.time;
+                    var handled = false;
+                    foreach (var messagingEvent in pageEntry["messaging"])
                     {
-                        await bot.SendApi.SendActionAsync(evt.Sender.ID, Bot.Messenger.Models.SenderAction.typing_on);
-
-                        Bot.Messenger.Models.UserProfileResponse userProfileRsp = await bot.UserProfileApi.GetUserProfileAsync(evt.Sender.ID);
-
-                        if (evt.Message.Attachments == null)
+                        foreach (var handler in _handlers)
                         {
-                                await bot.SendApi.SendTextAsync(evt.Sender.ID, $"Hello {userProfileRsp?.FirstName} :)");
+                            if (handled || (handled = handler.MessageHandled(messagingEvent)))
+                                break;
                         }
-                        else // if the user sent an image, file, sticker etc., we send it back to them
+                        if (!handled)
                         {
-                                foreach (var attachment in evt.Message.Attachments)
-                                {
-                                    if (attachment.Type != Bot.Messenger.Models.AttachmentType.fallback
-                                        && attachment.Type != Bot.Messenger.Models.AttachmentType.location)
-                                    {
-                                        await bot.SendApi.SendTextAsync(evt.Sender.ID, $"Hello {userProfileRsp?.FirstName}, you sent this and we thought it would be nice we sent it back :)");
-
-                                        await bot.SendApi.SendAttachmentAsync(evt.Sender.ID, attachment);
-                                    }
-                                }
+                            string meventText = messagingEvent.ToString();
+                            _logger.LogInformation(
+                                string.Format("Webhook received unknown messagingEvent: {0}",
+                                meventText));
                         }
                     }
+                    
+                }  
+            }
+
+        }
+
+        public void SendTextMessage(string recipientId, string messageText)
+        {
+            _logger.LogInformation("Send: "+messageText);
+
+            var messageData = JObject.FromObject(new
+            {
+                recipient = new
+                {
+                    id= recipientId
+                },
+                message = new 
+                {
+                    text = messageText,
+                    metadata = "DEVELOPER_DEFINED_METADATA"
+                }
+            });
+            CallSendAPI(messageData);
+        }
+
+        public async void CallSendAPI(JObject messageData)
+        {
+            using (var client = new HttpClient())
+            {
+                var requestUri = "https://graph.facebook.com/v2.6/me/messages?access_token="
+                    + Settings.FBPageAccessToken;
+                client.BaseAddress = new Uri(requestUri);
+                client.DefaultRequestHeaders.Accept.Clear();
+                var response = await client.PostAsJsonAsync(requestUri, messageData);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var body = await response.Content.ReadAsAsync<dynamic>();
+                    string recipientId = body.recipient_id;
+                    string messageId = body.message_id;
+
+                    if (messageId != null) {
+                        _logger.LogInformation(
+                            string.Format("Successfully sent message with id {0} to recipient {1}", 
+                        messageId, recipientId));
+                    } else {
+                    _logger.LogInformation(string.Format("Successfully called Send API for recipient {0}", 
+                        recipientId));
+                    }    
+                }
+                else{
+                    var error = await response.Content.ReadAsStringAsync();
+                    _logger.LogError(-1, null, error);
                 }
             }
 
-            return new HttpResponseMessage(HttpStatusCode.OK);
+
         }
     }
-
 }
