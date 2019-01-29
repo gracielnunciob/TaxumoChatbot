@@ -11,6 +11,9 @@ import { LoginComponent } from './login/login.component';
 import { DetailsComponent } from './details/details.component';
 import { TermsComponent } from './terms/terms.component';
 
+import { LoginService } from './login.service';
+import { DetailsService } from './details.service';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -29,6 +32,7 @@ import { TermsComponent } from './terms/terms.component';
       { path: 'fetch-data', component: FetchDataComponent },
     ])
   ],
+  providers: [LoginService, DetailsService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

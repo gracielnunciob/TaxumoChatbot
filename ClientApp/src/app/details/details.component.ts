@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { DetailsService } from '../details.service';
 
 @Component({
   selector: 'app-details',
@@ -17,31 +18,38 @@ export class DetailsComponent implements OnInit {
 
   saveGross(e){
     this.grossAmount = e.target.value;
+    this.detailsService.setGrossAmount(this.grossAmount);
     console.log("Gross Amount: " + this.grossAmount);
   }
 
   saveDate(e){
     this.date = e.target.value;
+    this.detailsService.setDate(this.date);
     console.log("Date: " + this.date);
   }
 
   saveORSINo(e){
     this.orsi = e.target.value;
+    this.detailsService.setOrsi(this.orsi);
     console.log("OR/SI: " + this.orsi);
   }
 
   saveCategory(e){
     this.category = e.target.value;
+    this.detailsService.setCategory(this.category);
     console.log("Category: " + this.category);
   }
 
   saveBName(e){
     this.bName = e.target.value;
+    this.detailsService.setBName(this.bName);
     console.log("Business Name: " + this.bName);
+    this.bName;
   }
 
   saveNotes(e){ 
     this.notes = e.target.value;
+    this.detailsService.setNotes(this.notes);
     console.log("Notes: " + this.notes);
   }
 
@@ -54,13 +62,16 @@ export class DetailsComponent implements OnInit {
 
         reader.readAsDataURL(file);
     }
+
+    this.detailsService.setImage(this.imageSrc);
+    //needs to upload pa via google drive API
   }
 
   saveData(){
     // Do your backend poop
   }
 
-  constructor() { }
+  constructor(private detailsService: DetailsService) { }
 
   ngOnInit() {
   }
