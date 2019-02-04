@@ -13,10 +13,14 @@ namespace TaxumoChatBot
     */
     public class AccountLinkedHandler<T> : IMessengerHandler
     {
+        IMessageSender _messageSender;
+
         ILogger<T> _logger;
-        public AccountLinkedHandler (ILogger<T> logger)
+        public AccountLinkedHandler (ILogger<T> logger, IMessageSender messageSender)
         {
             _logger = logger;
+            _messageSender = messageSender;
+
         }
         public bool MessageHandled(dynamic message)
         {
@@ -32,6 +36,14 @@ namespace TaxumoChatBot
                 _logger.LogInformation(
                     string.Format("Received account link event with for user {0} with status {1} " +
                 "and auth code {2} ", senderID, status, authCode));
+
+
+                    var flow = new DialogueFlow(senderID);
+                    var messageData = flow.GetCaseThree();
+                    _messageSender.CallSendAPI(messageData);
+
+
+
             }
             return result;
         }

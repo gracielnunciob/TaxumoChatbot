@@ -15,6 +15,7 @@ namespace TaxumoChatBot
     {
         ILogger<T> _logger;
         IMessageSender _messageSender;
+        MessageReadHandler<T> _handler;
         public PostbackHandler (ILogger<T> logger, IMessageSender messageSender)
         {
             _logger = logger;
@@ -38,9 +39,13 @@ namespace TaxumoChatBot
                     string.Format("Received postback for user {0} and page {1} with payload '{2}' " + 
                     "at {3}", senderID, recipientID, pyldText, timeOfPostback));
 
-                // When a postback is called, we'll send a message back to the sender to 
-                // let them know it was successful
-                _messageSender.SendTextMessage(senderID, "Postback called");
+
+                if (pyldText == "1") {
+                    var flow = new DialogueFlow(senderID);
+                    var messageData = flow.GetCaseTwo();
+                    _messageSender.CallSendAPI(messageData);
+
+                }
                     
             }
             return result;

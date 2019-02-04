@@ -28,9 +28,10 @@ namespace TaxumoChatBot.Controllers
             _handlers.Add(new DeliveryConfirmationHandler<WebhookController>(_logger));
             _handlers.Add(new PostbackHandler<WebhookController>(_logger, this));
             _handlers.Add(new MessageReadHandler<WebhookController>(_logger));
-            _handlers.Add(new AccountLinkedHandler<WebhookController>(_logger));            
+            _handlers.Add(new AccountLinkedHandler<WebhookController>(_logger, this));            
         }
         [HttpGet]
+        [Route("/webhook")]
         public string Get()
         {
             var req = Request;
@@ -53,6 +54,7 @@ namespace TaxumoChatBot.Controllers
 
         // POST /webhook
         [HttpPost]
+        [Route("/webhook")]
         public void Post([FromBody]dynamic data)
         {
             if (data["object"] == "page") {
@@ -64,9 +66,10 @@ namespace TaxumoChatBot.Controllers
                     var handled = false;
                     foreach (var messagingEvent in pageEntry["messaging"])
                     {
+                        
                         foreach (var handler in _handlers)
                         {
-                            if (handled || (handled = handler.MessageHandled(messagingEvent)))
+                            if (handled = handler.MessageHandled(messagingEvent))
                                 break;
                         }
                         if (!handled)
@@ -82,7 +85,6 @@ namespace TaxumoChatBot.Controllers
             }
 
         }
-
         public void SendTextMessage(string recipientId, string messageText)
         {
             _logger.LogInformation("Send: "+messageText);
@@ -114,18 +116,29 @@ namespace TaxumoChatBot.Controllers
 
                 if (response.IsSuccessStatusCode)
                 {
-                    var body = await response.Content.ReadAsAsync<dynamic>();
-                    string recipientId = body.recipient_id;
-                    string messageId = body.message_id;
 
-                    if (messageId != null) {
-                        _logger.LogInformation(
-                            string.Format("Successfully sent message with id {0} to recipient {1}", 
-                        messageId, recipientId));
-                    } else {
-                    _logger.LogInformation(string.Format("Successfully called Send API for recipient {0}", 
-                        recipientId));
-                    }    
+                    try
+                    {
+                        var body = await response.Content.ReadAsAsync<dynamic>();
+                        string recipientId = body.recipient_id;
+                        string messageId = body.message_id;
+                        if (messageId != null)
+                        {
+                            _logger.LogInformation(
+                                string.Format("Successfully sent message with id {0} to recipient {1}",
+                            messageId, recipientId));
+                        }
+                        else
+                        {
+                            _logger.LogInformation(string.Format("Successfully called Send API for recipient {0}",
+                                recipientId));
+                        }
+
+                    }
+                    catch (UnsupportedMediaTypeException e){
+                        
+                    }
+                        
                 }
                 else{
                     var error = await response.Content.ReadAsStringAsync();

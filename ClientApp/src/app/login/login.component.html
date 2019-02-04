@@ -18,10 +18,27 @@
   <input type="checkbox" />
   <a href="#"> Terms and Conditions </a><br>
 
-  <a href="/helloworld/welcome" class="square_btn">
-      <i class="fa fa-chevron-right" (click)="verifyUser()"></i> Verify
+
+  <div>
+    Account linking token: @ViewBag.AccountLinkingToken
+  </div>
+  <br>
+
+  <div>
+    Redirect URI: <a href=" @ViewBag.RedirectURI">redirect</a>
+  </div>
+  <br>
+
+  <div>
+    Redirect URI Successful:<a href="@ViewBag.RedirectURISuccess ">redirect</a>
+  </div>
+  <br>
+
+  <a href="@ViewBag.RedirectURISuccess" class="square_btn">
+    <i class="fa fa-chevron-right"></i> Verify
   </a>
 </form>
+
   
 <!-- <div class="modal fade" id="termsModal" tabindex="-1" role="dialog" aria-labelledby="termsModal" aria-hidden="true">
     <div class="modal-dialog" role="document">
