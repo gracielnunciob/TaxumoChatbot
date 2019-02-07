@@ -44,9 +44,18 @@ namespace TaxumoChatBot
                     var flow = new DialogueFlow(senderID);
                     var messageData = flow.GetCaseTwo();
                     _messageSender.CallSendAPI(messageData);
-
                 }
-                    
+                else if (pyldText == "5")
+                {
+                    var flow = new DialogueFlow(senderID);
+                    var messageData = flow.GetCaseThree();
+                    _messageSender.CallSendAPI(messageData);
+                }
+                else if (pyldText == "6")
+                {
+                    _messageSender.SendTextMessage(senderID, "Thank you!");
+                }
+
             }
             return result;
         }

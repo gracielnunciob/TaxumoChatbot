@@ -10,13 +10,14 @@ import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { LoginComponent } from './login/login.component';
 import { DetailsComponent } from './details/details.component';
 import { TermsComponent } from './terms/terms.component';
+import { LoginService } from './login/login.service';
 
 
 const appRoutes: Routes = [
- // { path: '', component: LoginComponent, pathMatch: 'full' },
+  { path: '', component: LoginComponent, pathMatch: 'full' },
   { path: 'fetch-data', component: FetchDataComponent },
   { path: 'details', component: DetailsComponent },
-  { path: 'login', component: LoginComponent },
+  { path: 'login-page', component: LoginComponent },
   { path: 'terms', component: TermsComponent },
 
 ];
@@ -37,6 +38,7 @@ const appRoutes: Routes = [
     FormsModule,
     RouterModule.forRoot(appRoutes)
   ],
+  providers: [LoginService],
   exports: [RouterModule],
   bootstrap: [AppComponent]
 })

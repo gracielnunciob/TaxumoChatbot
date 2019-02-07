@@ -31,7 +31,6 @@ namespace TaxumoChatBot.Controllers
             _handlers.Add(new AccountLinkedHandler<WebhookController>(_logger, this));            
         }
         [HttpGet]
-        [Route("/webhook")]
         public string Get()
         {
             var req = Request;
@@ -54,7 +53,6 @@ namespace TaxumoChatBot.Controllers
 
         // POST /webhook
         [HttpPost]
-        [Route("/webhook")]
         public void Post([FromBody]dynamic data)
         {
             if (data["object"] == "page") {
@@ -67,7 +65,7 @@ namespace TaxumoChatBot.Controllers
                     foreach (var messagingEvent in pageEntry["messaging"])
                     {
                         
-                        foreach (var handler in _handlers)
+                       foreach (var handler in _handlers)
                         {
                             if (handled = handler.MessageHandled(messagingEvent))
                                 break;

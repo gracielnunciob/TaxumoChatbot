@@ -6,68 +6,56 @@
   </ul>
 </div>
 
-<form>
-  <div class="form-group">
-    <label for="email">Email address</label>
-    <input type="email" (input)="saveEmail($event)" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email">
-  </div>
-  <div class="form-group">
-    <label for="tinNo">TIN</label>
-    <input type="text" (input)="saveTIN($event)" class="form-control" id="tinNo" placeholder="Enter TIN">
-  </div>
-  <input type="checkbox" />
-  <a href="#"> Terms and Conditions </a><br>
 
 
-  <div>
-    Account linking token: @ViewBag.AccountLinkingToken
-  </div>
-  <br>
 
-  <div>
-    Redirect URI: <a href=" @ViewBag.RedirectURI">redirect</a>
-  </div>
-  <br>
+  <form action="authorize/submit" method="POST">
+    <input type="text" name="formRedirectUrl" value="@ViewBag.RedirectURI" />
+    <div class="form-group">
+      <label for="email">Email address</label>
+      <input type="email" (input)="saveEmail($event)" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email">
+    </div>
+    <div class="form-group">
+      <label for="tinNo">TIN</label>
+      <input type="text" (input)="saveTIN($event)" class="form-control" id="tinNo" placeholder="Enter TIN">
+    </div>
+    <input type="checkbox" />
+    <a href="#"> Terms and Conditions </a><br>
 
-  <div>
-    Redirect URI Successful:<a href="@ViewBag.RedirectURISuccess ">redirect</a>
-  </div>
-  <br>
 
-  <a href="@ViewBag.RedirectURISuccess" class="square_btn">
-    <i class="fa fa-chevron-right"></i> Verify
-  </a>
-</form>
+    <input type="submit" value="Submit" class="square_btn" (click)="submitPost();" />
 
-  
-<!-- <div class="modal fade" id="termsModal" tabindex="-1" role="dialog" aria-labelledby="termsModal" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Terms and Conditions</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
+  </form>
 
-        <div class="modal-body">
-          {{terms}}
-       </div>
 
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        </div>
-        
+  <!-- <div class="modal fade" id="termsModal" tabindex="-1" role="dialog" aria-labelledby="termsModal" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Terms and Conditions</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+
+          <div class="modal-body">
+            {{terms}}
+         </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+
+      </div>
     </div>
   </div>
-</div>
-  
-  
-   -->
-  
-  
-  
-  
-  
+
+
+     -->
+
+
+
+
+
 

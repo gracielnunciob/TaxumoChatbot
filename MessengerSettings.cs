@@ -9,5 +9,5 @@ public class MessengerSettings
     public string FBPageAccessToken { get; set; } = "EAAesfiQ7Mu4BAKYv1Eqt977s1Fb9DcL1ZAOrBgZC9JNCA8ZAz7mtcfAsrPEQWBskXJOw4ZCh4OjmyJf8MDDCQw7odjmPsjmz3lvn2NlYMn9oJaQIZAwRamvtsRT3FYgSZBbH24I2ZBaZBOQ1cz0QsaZBVBrWvxZC9KIhIKFLQOg6xtCmgaPJsGsXWS";
     // URL where the app is running (include protocol). Used to point to scripts and 
     // assets located at this address. 
-    public string ServerURL { get; set; }
+    public string ServerURL { get; set; } = "https://d6a69f38.ngrok.io";
 }

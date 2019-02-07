@@ -8,7 +8,7 @@ namespace TaxumoChatBot.Handlers{
 
     public class DialogueFlow
     {
-
+        private MessengerSettings Settings { get; set; }
         private JObject CaseOne;
         private JObject CaseTwo;
         private JObject CaseThree;
@@ -74,12 +74,12 @@ namespace TaxumoChatBot.Handlers{
                             buttons = new dynamic[]{
                                     new {
                                         type= "web_url",
-                                        url= " http://7282425e.ngrok.io",
+                                        url= "https://login.microsoftonline.com/te/taxumoapp.onmicrosoft.com/b2c_1_su/oauth2/v2.0/authorize?client_id=45cd44fe-3e8e-495f-bfc1-f3127c86854b&redirect_uri=https%3A%2F%2Fapp.taxumo.com%2Fsignin-oidc&response_type=id_token&scope=openid%20profile&response_mode=form_post&nonce=636850976835039718.MjQzYmVkYmUtMmI1Zi00NjRiLTgwYWItMzEzOTVhY2E4MjYzMWFlODE1YjktMDVlMC00YTZhLWFkOGYtOTI3YjE1YjY3MTE1&state=CfDJ8F4WXZoBpZhAmXTOi_OnBztO75-FVMunRLhK-li_eDUsUUQHFRH-OZRTCON9a_nfvpWmMdixWUvMYuwW6IhEt5nUE75Z-tM3r78IECY2NJxcWSECH8MMNjt2D-Z1s9jfOgtcKTuwXA9oMQIcNBbqLDuVQlW7tzVKwtZfAU_pjBA9Ek5ZdP5Mqg_OhRjCQP6F0csD81u71VnhSXUWJbFxHt6igrJPJ1rweOggS1EP_LHPts8ZewbmReDg684MNe1dAf0OhcCq16K5PkNAQm4-Eh-LyYE_p1nb_y_sVIGOOLUB&x-client-SKU=ID_NET&x-client-ver=2.1.4.0",
                                         title= "No"
                                     },
                                     new {
                                         type= "account_link",
-                                        url= "http://8b7d0064.ngrok.io/login",
+                                        url=  "https://829b6bee.ngrok.io/authorize",
                                        
                                     },
                                }
@@ -110,9 +110,9 @@ namespace TaxumoChatBot.Handlers{
                                         payload= "5"
                                     },
                                    new {
-                                        type= "web_url",
-                                        url= "http://8b7d0064.ngrok.io",
-                                        title= "Yes I do"
+                                        type= "account_link",
+                                        url= " https://829b6bee.ngrok.io/upload",
+                                     
                                     },
                                }
                         }
@@ -142,9 +142,9 @@ namespace TaxumoChatBot.Handlers{
                                         payload= "6"
                                     },
                                    new {
-                                        type= "web_url",
-                                        url= "http://8b7d0064.ngrok.io",
-                                        title= "Yes I do"
+                                        type= "postback",
+                                        title= "Yes",
+                                        payload= "5"
                                     },
                                }
                         }

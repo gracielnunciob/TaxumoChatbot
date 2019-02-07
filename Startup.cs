@@ -52,7 +52,7 @@ namespace TaxumoChatbot
                     name: "default",
                     template: "{controller}/{action=Index}/{id?}");
             });
-
+             
             app.UseSpa(spa =>
             {
                 // To learn more about options for serving an Angular SPA from ASP.NET Core,
