@@ -77,10 +77,21 @@
         }
 
         form {
-            margin: 10px;
-            margin-top: 20px;
+            position:fixed;
+            top: 50%;
+            left: 50%;
+            width:30em;
+            height:18em;
+            margin-top: -9em; /*set to a negative number 1/2 of your height*/
+            margin-left: -15em; /*set to a negative number 1/2 of your width*/
         }
     </style>
+
+
+    <script>
+        var email = document.getElementById("email").value;
+        var tinNO = document.getElementById("tinNo").value;
+    </script>
 
 </head>
 
@@ -104,9 +115,8 @@
     </div>
     <input type="checkbox" />
     <a href="#termsModal" data-toggle="modal" data-target="#termsModal"> Terms and Conditions </a><br>
+    <a href="@ViewBag.RedirectURISuccess" class="square_btn">Verify</a>
 </form>
-<a href="@ViewBag.RedirectURISuccess" class="square_btn">Verify</a>
- 
 
 <div class="modal fade" id="termsModal" tabindex="-1" role="dialog" aria-labelledby="termsModal" aria-hidden="true">
     <div class="modal-dialog" role="document">
