@@ -92,20 +92,21 @@
         </li>
     </ul>
 </div>
-
-<form action="authorize/submit" method="POST">
+<form action="authorize/verify" method="Post">
     <div class="form-group">
+        <input type="hidden" name="formRedirectUrl" value="@ViewBag.RedirectURI" />
         <label for="email">Email address</label>
-        <input type="email" (input)="saveEmail($event)" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email">
+        <input type="email" class="form-control" name="email" aria-describedby="emailHelp" placeholder="Enter email">
     </div>
     <div class="form-group">
         <label for="tinNo">TIN</label>
-        <input type="text" (input)="saveTIN($event)" class="form-control" id="tinNo" placeholder="Enter TIN">
+        <input type="text" class="form-control" name="tinNo" placeholder="Enter TIN">
     </div>
     <input type="checkbox" />
     <a href="#termsModal" data-toggle="modal" data-target="#termsModal"> Terms and Conditions </a><br>
+    <input type="submit" value="Verify"/>
 </form>
-<a href="@ViewBag.RedirectURISuccess" class="square_btn">Verify</a>
+
  
 
 <div class="modal fade" id="termsModal" tabindex="-1" role="dialog" aria-labelledby="termsModal" aria-hidden="true">

@@ -37,7 +37,7 @@ namespace TaxumoChatBot
                     string.Format("Received account link event with for user {0} with status {1} " +
                 "and auth code {2} ", senderID, status, authCode));
 
-                if (authCode == "1")
+                if (authCode[authCode.Length - 1] == '1')
                 {
                     var flow = new DialogueFlow(senderID);
                     var messageData = flow.GetCaseThree();

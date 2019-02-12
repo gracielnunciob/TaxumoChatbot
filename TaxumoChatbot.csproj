@@ -22,18 +22,18 @@
   <ItemGroup>
     <!-- Don't publish the SPA source files, but do show them in the project files list -->
     <Compile Remove="Pages\Authorize\**" />
+    <Compile Remove="Views\NewFolder\**" />
     <Content Remove="$(SpaRoot)**" />
     <Content Remove="Pages\Authorize\**" />
+    <Content Remove="Views\NewFolder\**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Remove="Pages\Authorize\**" />
+    <EmbeddedResource Remove="Views\NewFolder\**" />
     <None Remove="Pages\Authorize\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Views\NewFolder\" />
+    <None Remove="Views\NewFolder\**" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
